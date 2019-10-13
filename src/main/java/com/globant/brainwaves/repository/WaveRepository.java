@@ -1,6 +1,6 @@
-package com.globant.brainWaves.repository;
+package com.globant.brainwaves.repository;
 
-import com.globant.brainWaves.model.Wave;
+import com.globant.brainwaves.model.Wave;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 

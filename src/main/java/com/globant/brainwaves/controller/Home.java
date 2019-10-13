@@ -1,4 +1,4 @@
-package com.globant.brainWaves.controller;
+package com.globant.brainwaves.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,7 +8,7 @@ public class Home {
 
     @RequestMapping("/")
     public String home() {
-        return "Hello Docker World";
+        return "Core-Engine";
     }
 
 }

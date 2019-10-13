@@ -1,7 +1,7 @@
-package com.globant.brainWaves.service;
+package com.globant.brainwaves.service;
 
-import com.globant.brainWaves.model.Wave;
-import com.globant.brainWaves.repository.WaveRepository;
+import com.globant.brainwaves.model.Wave;
+import com.globant.brainwaves.repository.WaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +10,8 @@ import java.util.Optional;
 @Service
 public class WaveService {
 
-    private WaveRepository repository;
-
     @Autowired
-    public WaveService(WaveRepository repository) {
-        this.repository = repository;
-    }
+    private transient WaveRepository repository;
 
     public Wave save(Wave wave) {
         return repository.save(wave);

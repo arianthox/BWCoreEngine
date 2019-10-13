@@ -14,7 +14,7 @@ services:
       - http.host=0.0.0.0
       - transport.host=0.0.0.0
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
     ulimits:
       memlock:
         soft: -1
@@ -41,8 +41,8 @@ services:
   core-engine:
     depends_on:
       - elasticsearch
-    container_name: spring-boot-core-app
-    image: spring-boot-core-app
+    container_name: core-engine
+    image: core-engine
     build: ./
     ports:
       - "8081:8081"

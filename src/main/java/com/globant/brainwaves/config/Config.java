@@ -1,4 +1,4 @@
-package com.globant.brainWaves.config;
+package com.globant.brainwaves.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +15,14 @@ import java.util.Collections;
 
 @Configuration
 @EnableSwagger2
-@EnableElasticsearchRepositories("com.globant.brainWaves.repository")
+@EnableElasticsearchRepositories("com.globant.brainwaves.repository")
 public class Config {
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.globant.brainWaves.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.globant.brainwaves.controller"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build()
                 .apiInfo(apiInfo());

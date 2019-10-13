@@ -1,7 +1,7 @@
-package com.globant.brainWaves.controller;
+package com.globant.brainwaves.controller;
 
-import com.globant.brainWaves.model.Wave;
-import com.globant.brainWaves.service.WaveService;
+import com.globant.brainwaves.model.Wave;
+import com.globant.brainwaves.service.WaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import javax.validation.Valid;
 public class WaveController {
 
     @Autowired
-    private WaveService waveService;
+    private transient WaveService waveService;
 
     @GetMapping
     public String sayHello() {

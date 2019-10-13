@@ -1,11 +1,11 @@
-package com.globant.brainWaves;
+package com.globant.brainwaves;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BrainWavesApplication {
+public class CoreEngineApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BrainWavesApplication.class, args);
+        SpringApplication.run(CoreEngineApplication.class, args);
     }
 }
