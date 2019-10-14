@@ -16,6 +16,28 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+eureka:
+  instance:
+    hostname: eureka1
+    lease-expiration-duration-in-seconds: 10
+    lease-renewal-interval-in-seconds: 5
+  server:
+    eviction-interval-timer-in-ms: 5000
+    enable-self-preservation: false
+    renewal-threshold-update-interval-ms: 120000
+    use-read-only-response-cache: false
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8081/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 info:
   # static properties
   app:
@@ -25,3 +47,7 @@ info:
 logging:
   level:
     root: info
+    com:
+      netflix:
+        discovery: 'OFF'
+        eureka: 'OFF'

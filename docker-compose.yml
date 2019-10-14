@@ -28,6 +28,8 @@ services:
       esnet:
   #              ipv4_address: 172.0.0.10
 
+
+
   elasticsearch-hq:
     image: elastichq/elasticsearch-hq:latest
     container_name: elasticsearch-hq
@@ -58,6 +60,21 @@ services:
     links:
       - elasticsearch
 
+  bw-matcher:
+    depends_on:
+      - core-engine
+    container_name: bw-matcher
+    image: bw-matcher
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+    networks:
+      esnet:
+    environment:
+      - "EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://core-engine:8081/eureka"
+    links:
+      - core-engine
 
 volumes:
   esdata1:
