@@ -20,10 +20,10 @@ eureka:
   instance:
     hostname: eureka1
     lease-expiration-duration-in-seconds: 10
-    lease-renewal-interval-in-seconds: 5
+    lease-renewal-interval-in-seconds: 10
   server:
     eviction-interval-timer-in-ms: 5000
-    enable-self-preservation: false
+    enable-self-preservation: true
     renewal-threshold-update-interval-ms: 120000
     use-read-only-response-cache: false
   client:
