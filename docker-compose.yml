@@ -1,0 +1,90 @@
+version: "3"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+    container_name: elasticsearch
+    environment:
+      - cluster.name=elasticsearch
+      - node.name=node1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      esnet:
+  #              ipv4_address: 172.0.0.10
+
+
+
+  elasticsearch-hq:
+    image: elastichq/elasticsearch-hq:latest
+    container_name: elasticsearch-hq
+    ports:
+      - 5000:5000
+    depends_on:
+      - elasticsearch
+    networks:
+      esnet:
+
+  core-engine:
+    depends_on:
+      - elasticsearch
+    container_name: core-engine
+    image: core-engine
+    build: ./
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    networks:
+      esnet:
+    #        ipv4_address: 172.0.0.11
+    environment:
+      - "SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME=elasticsearch"
+      - "SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES=elasticsearch:9300"
+      - "SPRING_DATA_ELASTICSEARCH_REST_URIS=http://elasticsearch:9200"
+    links:
+      - elasticsearch
+
+  bw-matcher:
+    depends_on:
+      - core-engine
+    container_name: bw-matcher
+    image: bw-matcher
+    build: ./../BWMatcher
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+    networks:
+      esnet:
+    environment:
+      - "EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://core-engine:8081/eureka"
+    links:
+      - core-engine
+
+volumes:
+  esdata1:
+    driver: local
+
+networks:
+  esnet:
+    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.0.0.0/24
