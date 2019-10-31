@@ -13,6 +13,7 @@ public class Wave implements Serializable {
     @Id
     private String id;
     private String name;
+    public byte[] input;
 
     public Wave() {
     }
@@ -33,5 +34,11 @@ public class Wave implements Serializable {
         this.name = name;
     }
 
+    public byte[] getInput() {
+        return input;
+    }
 
+    public void setInput(byte[] input) {
+        this.input = input;
+    }
 }

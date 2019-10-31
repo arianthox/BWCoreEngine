@@ -14,7 +14,7 @@ import javax.validation.Valid;
 public class WaveController {
 
     @Autowired
-    private transient WaveService waveService;
+    private WaveService waveService;
 
     @GetMapping
     public String sayHello() {
