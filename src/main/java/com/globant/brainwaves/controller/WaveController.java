@@ -14,7 +14,7 @@ import javax.validation.Valid;
 public class WaveController {
 
     @Autowired
-    private WaveService waveService;
+    private transient WaveService waveService;
 
     @GetMapping
     public String sayHello() {
@@ -30,8 +30,9 @@ public class WaveController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveWave(@Valid @RequestBody Wave wave) {
+    public Wave saveWave(@RequestBody Wave wave) {
         waveService.save(wave);
+        return wave;
     }
 
 }

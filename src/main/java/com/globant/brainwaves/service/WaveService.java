@@ -17,13 +17,8 @@ public class WaveService {
         return repository.save(wave);
     }
 
-    public void delete(Wave wave) {
-        repository.delete(wave);
-    }
-
     public Optional<Wave> findById(String id) {
         return repository.findById(id);
     }
-
 
 }

@@ -4,16 +4,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Document(indexName = "elastichq", type = "wave")
 public class Wave implements Serializable {
 
-    private static final long serialVersionUID=1;
+    private static final long serialVersionUID = 1;
 
     @Id
     private String id;
     private String name;
-    public byte[] input;
+    public List<Short> input;
 
     public Wave() {
     }
@@ -34,11 +35,11 @@ public class Wave implements Serializable {
         this.name = name;
     }
 
-    public byte[] getInput() {
+    public List<Short> getInput() {
         return input;
     }
 
-    public void setInput(byte[] input) {
+    public void setInput(List<Short> input) {
         this.input = input;
     }
 }
