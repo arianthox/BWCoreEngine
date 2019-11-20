@@ -3,6 +3,7 @@ package com.globant.brainwaves.controller;
 import com.globant.brainwaves.CoreEngineApplication;
 import com.globant.brainwaves.model.Wave;
 import com.globant.brainwaves.service.WaveService;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,7 @@ public class WaveControllerTest {
     @Test
     public void waveByIdTest() throws Exception {
 
-        Wave wave = new Wave();
-        wave.setId("1");
-        wave.setDeviceId("deviceId123");
+        Wave wave = createWave();
         when(waveService.findById("1")).thenReturn(Optional.of(wave));
 
         mvc.perform(MockMvcRequestBuilders.get(API_CORE_ENGINE + "/1").accept(MediaType.APPLICATION_JSON))
@@ -61,12 +60,10 @@ public class WaveControllerTest {
     @Test
     public void wavesByIdTest() throws Exception {
 
-        Wave wave = new Wave();
-        wave.setId("1");
-        wave.setDeviceId("deviceId123");
+        Wave wave = createWave();
         when(waveService.findAllByDeviceId("deviceId123")).thenReturn(Optional.of(Collections.singletonList(wave)));
 
-        mvc.perform(MockMvcRequestBuilders.get(API_CORE_ENGINE + "/deviceId=abc").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.get(API_CORE_ENGINE + "/device/deviceId123").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(toJson(Collections.singletonList(wave)), false));
 
@@ -75,15 +72,24 @@ public class WaveControllerTest {
     @Test
     public void saveWave() throws Exception {
 
+        Wave wave = createWave();
+        when(waveService.save(wave)).thenReturn(wave);
+
+        mvc.perform(MockMvcRequestBuilders.post(API_CORE_ENGINE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(wave))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(toJson(wave), false));
+
+    }
+
+    @NotNull
+    private Wave createWave() {
         Wave wave = new Wave();
         wave.setId("1");
         wave.setDeviceId("deviceId123");
-        when(waveService.save(wave)).thenReturn(wave);
-
-        mvc.perform(MockMvcRequestBuilders.post(API_CORE_ENGINE, wave).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(toJson(Collections.singletonList(wave)), false));
-
+        return wave;
     }
 
 
@@ -91,6 +97,4 @@ public class WaveControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(obj);
     }
-
-
 }

@@ -29,10 +29,10 @@ public class WaveController {
                 HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping
+    @GetMapping("/device/{id}")
     @ResponseBody
-    public List<Wave> wavesById(@RequestParam(value = "deviceId") String deviceId) {
-        return waveService.findAllByDeviceId(deviceId).orElseThrow(() -> new ResponseStatusException(
+    public List<Wave> wavesById(@PathVariable("id") String id) {
+        return waveService.findAllByDeviceId(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND));
     }
 
