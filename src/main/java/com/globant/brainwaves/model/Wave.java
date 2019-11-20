@@ -3,6 +3,7 @@ package com.globant.brainwaves.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,7 +14,9 @@ public class Wave implements Serializable {
 
     @Id
     private String id;
-    private String name;
+
+    @NotBlank(message = "Device Id is mandatory")
+    private String deviceId;
     public List<Short> input;
 
     public Wave() {
@@ -27,12 +30,12 @@ public class Wave implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public List<Short> getInput() {

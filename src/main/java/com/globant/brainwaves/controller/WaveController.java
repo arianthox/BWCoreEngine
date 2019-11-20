@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/core-engine")
+@RequestMapping(value = "/api/core-engine")
 public class WaveController {
 
     @Autowired
@@ -28,9 +29,16 @@ public class WaveController {
                 HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping
+    @ResponseBody
+    public List<Wave> wavesById(@RequestParam(value = "deviceId") String deviceId) {
+        return waveService.findAllByDeviceId(deviceId).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Wave saveWave(@RequestBody Wave wave) {
+    public Wave saveWave(@RequestBody @Valid Wave wave) {
         waveService.save(wave);
         return wave;
     }
