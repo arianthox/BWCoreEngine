@@ -46,7 +46,7 @@ public class WaveControllerTest {
     }
 
     @Test
-    public void waveByIdTest() throws Exception {
+    public void waveById() throws Exception {
 
         Wave wave = createWave();
         when(waveService.findById("1")).thenReturn(Optional.of(wave));
@@ -58,7 +58,7 @@ public class WaveControllerTest {
     }
 
     @Test
-    public void wavesByIdTest() throws Exception {
+    public void wavesByDeviceId() throws Exception {
 
         Wave wave = createWave();
         when(waveService.findAllByDeviceId("deviceId123")).thenReturn(Optional.of(Collections.singletonList(wave)));

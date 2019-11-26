@@ -31,7 +31,7 @@ public class WaveController {
 
     @GetMapping("/device/{id}")
     @ResponseBody
-    public List<Wave> wavesById(@PathVariable("id") String id) {
+    public List<Wave> wavesByDeviceId(@PathVariable("id") String id) {
         return waveService.findAllByDeviceId(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND));
     }
