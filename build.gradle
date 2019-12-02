@@ -1,43 +1,36 @@
-buildscript {
-    ext {
-        springBootVersion = '2.1.9.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.6")
-    }
+plugins {
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+    id 'pmd'
 }
-
-apply plugin: 'org.springframework.boot'
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'pmd'
-apply plugin: "com.github.spotbugs"
-apply plugin: 'io.spring.dependency-management'
 
 def defaultEncoding = 'UTF-8'
 [compileJava, compileTestJava]*.options*.encoding = defaultEncoding
-
 
 group = 'com.globant/BrainWaves/CoreEngine'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-
 ext {
-    set('springCloudVersion', "Greenwich.SR3")
+    set('springCloudVersion', "Hoxton.RC2")
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 dependencyManagement {
@@ -55,8 +48,12 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
     testCompile 'org.testcontainers:elasticsearch:1.11.1'
 }
 
@@ -64,19 +61,6 @@ sourceSets {
     main {
         java.srcDirs = ['src/main/java']
     }
-}
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
-spotbugs {
-    ignoreFailures = true
-    effort = "max"
-    reportLevel = "low"
 }
 
 tasks.withType(Pmd){
