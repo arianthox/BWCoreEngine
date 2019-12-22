@@ -5,21 +5,21 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.List;
 
-@Document(indexName = "elastichq", type = "wave")
-public class Wave implements Serializable {
+@Document(indexName = "elastichq", type = "pattern")
+public class Pattern implements Serializable {
 
-    private static final long serialVersionUID = 7192043801352630806L;
+    private static final long serialVersionUID = 2019128099084761251L;
 
     @Id
     private String id;
 
     @NotBlank(message = "Device Id is mandatory")
     private String deviceId;
-    public List<Short> input;
 
-    public Wave() {
+    private short[][] pattern;
+
+    public Pattern() {
     }
 
     public String getId() {
@@ -38,11 +38,11 @@ public class Wave implements Serializable {
         this.deviceId = deviceId;
     }
 
-    public List<Short> getInput() {
-        return input;
+    public short[][] getPattern() {
+        return pattern;
     }
 
-    public void setInput(List<Short> input) {
-        this.input = input;
+    public void setPattern(short[][] pattern) {
+        this.pattern = pattern;
     }
 }
