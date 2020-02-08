@@ -1,10 +1,10 @@
 stage 'build_Project'
 node{
 
-  stage 'checkout'
+  //stage 'checkout'
 
    // Get some code from a GitHub repository
-  git url: 'https://github.corp.globant.com/BrainWaves/CoreEngine.git'
+  //git url: 'https://github.corp.globant.com/BrainWaves/CoreEngine.git'
 
   stage 'build'
 
