@@ -1,5 +1,13 @@
 stage 'build_Project'
 node{
+
+  stage 'checkout'
+
+   // Get some code from a GitHub repository
+  git url: 'https://github.corp.globant.com/BrainWaves/CoreEngine.git'
+
+  stage 'build'
+
   if(isUnix()){
   sh './gradlew clean build'
 
