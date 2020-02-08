@@ -9,7 +9,9 @@ pipeline {
 
     stages {
         stage('Checkout') {
-                git url: 'git@github.corp.globant.com:BrainWaves/CoreEngine.git'
+            steps { //Checking out the repo
+                        checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: ':^(?!origin/master$|origin/develop$).*']], browser: [$class: 'CoreEngine', repoUrl: 'https://github.corp.globant.com/BrainWaves/CoreEngine'], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'git', url: 'ssh://git@github.corp.globant.com:BrainWaves/CoreEngine.git']]]
+            }
         }
 //         stage('Unit & Integration Tests') {
 //             steps {
