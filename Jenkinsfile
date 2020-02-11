@@ -14,11 +14,9 @@ pipeline {
     }
 
     stage('build_Project'){
-          if(isUnix()){
+       steps{
             sh './gradlew clean build'
-          } else {
-            bat 'gradlew.bat clean build'
-          }
+       }
     }
 
     stage('Building image') {
