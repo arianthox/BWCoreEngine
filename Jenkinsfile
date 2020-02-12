@@ -1,6 +1,6 @@
 pipeline {
   environment {
-      registry = "ricardosanchez/brainwaves"
+      registry = "brainwaves/core-engine"
       registryCredential = 'dockerhub'
       dockerImage = ''
   }
