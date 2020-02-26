@@ -46,3 +46,4 @@ public class Wave implements Serializable {
         this.input = input;
     }
 }
+
