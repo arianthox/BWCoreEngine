@@ -165,6 +165,8 @@ volumes:
     driver: local
 
 networks:
+  dockernet:
+    external: true
   esnet:
     driver: bridge
 #    ipam:

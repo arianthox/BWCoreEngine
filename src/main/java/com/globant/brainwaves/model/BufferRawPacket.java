@@ -1,22 +1,13 @@
 package com.globant.brainwaves.model;
 
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.stream.Stream;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor
+@Data
 public class BufferRawPacket implements Packet {
 
-    private int[] bufferRawEeg;
-
-    public BufferRawPacket(int[] bufferRawEeg) {
-        this.bufferRawEeg = bufferRawEeg;
-    }
-
-    public int[] getBufferRawEeg() {
-        return bufferRawEeg;
-    }
-
+    public int[] bufferRawEeg;
 
 }
