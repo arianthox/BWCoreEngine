@@ -17,7 +17,7 @@ public class PacketService {
     public void send(String deviceId,final BufferRawPacket packet) {
         logger.info(String.format("Device: %s Packet: %s", deviceId,Collections.singletonList(packet.toHashMap()).toString()));
     }
-    public void send(String deviceId,final List<BufferRawPacket> packetList) {
-        packetList.stream().forEach(bufferRawPacket -> send(deviceId,bufferRawPacket));
+    public void send(String deviceId,final BufferRawPacket... packetList) {
+        List.of(packetList).stream().forEach(bufferRawPacket -> send(deviceId,bufferRawPacket));
     }
 }

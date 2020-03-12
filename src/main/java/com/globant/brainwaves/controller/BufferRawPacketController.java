@@ -9,25 +9,21 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/core-engine/packet")
-public class PacketController {
+@RequestMapping(value = "/api/core-engine/packet/bufferrawpacket")
+public class BufferRawPacketController {
 
     private final transient PacketService packetService;
 
-    public PacketController(PacketService packetService) {
+    public BufferRawPacketController(PacketService packetService) {
         this.packetService = packetService;
     }
 
     @PostMapping("/receive/{deviceId}")
-    public ResponseEntity receive(@PathVariable("deviceId") String id,@RequestBody @Valid BufferRawPacket packet) {
+    public ResponseEntity receive(@PathVariable("deviceId") String id,@RequestBody @Valid BufferRawPacket... packet) {
         packetService.send(id,packet);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/receive/{deviceId}")
-    public ResponseEntity receive(@PathVariable("deviceId") String id,@RequestBody @Valid List<BufferRawPacket> packetList) {
-        packetService.send(id,packetList);
-        return ResponseEntity.ok().build();
-    }
+
 
 }
