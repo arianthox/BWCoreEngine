@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping(value = "/api/core-engine/admin/pattern")
 public class PatternController {
 
-    @Autowired
-    private transient PatternService patternService;
+    private final transient PatternService patternService;
+
+    public PatternController(PatternService patternService) {
+        this.patternService = patternService;
+    }
 
     @GetMapping("/all")
     @ResponseBody
