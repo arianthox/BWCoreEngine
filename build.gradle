@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.1.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
     id 'pmd'
 }
@@ -20,8 +20,8 @@ ext {
     set('springCloudVersion', "Hoxton.RC2")
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 configurations {
     developmentOnly
@@ -52,7 +52,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:elasticsearch:1.11.1'
 }
 
