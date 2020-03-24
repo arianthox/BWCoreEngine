@@ -1,3 +1,6 @@
+/* import shared library */
+@Library('jenkins-shared-library')_
+
 pipeline {
   environment {
       registry = "brainwaves/core-engine"
@@ -44,4 +47,9 @@ pipeline {
     }
 
   }
+  post {
+        always {
+           slackNotificator(currentBuild.currentResult)
+        }
+    }
 }
