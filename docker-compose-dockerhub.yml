@@ -157,6 +157,22 @@ services:
     links:
       - core-engine
 
+  bw-segmenter:
+    depends_on:
+      - core-engine
+    container_name: bw-segmenter
+    image: brainwaves/bwsegmenter:latest
+    ports:
+      - "8005:8005"
+    expose:
+      - "8005"
+    networks:
+      esnet:
+    environment:
+      - "EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://core-engine:8001/eureka"
+    links:
+      - core-engine
+
 volumes:
   esdata1:
     driver: local
