@@ -11,6 +11,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      esnet:
 
   broker:
     image: confluentinc/cp-enterprise-kafka:5.2.2
@@ -21,19 +23,26 @@ services:
     ports:
       - "29092:29092"
       - "9092:9092"
+    expose:
+      - "9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://broker:9092
       KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper:2181
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      esnet:
 
   schema-registry:
     image: confluentinc/cp-schema-registry:5.2.2
@@ -47,6 +56,8 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+    networks:
+      esnet:
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:5.2.2
@@ -67,43 +78,73 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+    networks:
+      esnet:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+    image: amazon/opendistro-for-elasticsearch:1.6.0
     container_name: elasticsearch
     environment:
       - cluster.name=elasticsearch
-      - node.name=node1
+      - node.name=node-master
+      - node.master=true
+      - node.data=true
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - http.cors.enabled=true
       - http.cors.allow-origin=*
       - http.host=0.0.0.0
       - transport.host=0.0.0.0
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+      - network.host=0.0.0.0
+      #      - discovery.seed_hosts=node1,node2
+      #      - cluster.initial_master_nodes=node1,node2
+      - opendistro_security.disabled=true #to Disable SSL
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
     ulimits:
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the Elasticsearch user, set to at least 65536 on modern systems
+        hard: 65536
     volumes:
       - esdata1:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-      - 9300:9300
+      - 9600:9300 # required for Performance Analyzer
+    expose:
+      - "9200"
+      - "9300"
     networks:
-      esnet:
-  #              ipv4_address: 172.0.0.10
-
-  elasticsearch-hq:
-    image: elastichq/elasticsearch-hq:latest
-    container_name: elasticsearch-hq
-    ports:
-      - 5000:5000
-    depends_on:
-      - elasticsearch
-    networks:
-      esnet:
+      - esnet
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+#    container_name: elasticsearch
+#    environment:
+#      - cluster.name=elasticsearch
+#      - node.name=node1
+#      - discovery.type=single-node
+#      - bootstrap.memory_lock=true
+#      - http.cors.enabled=true
+#      - http.cors.allow-origin=*
+#      - http.host=0.0.0.0
+#      - transport.host=0.0.0.0
+#      - xpack.security.enabled=false
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - esdata1:/usr/share/elasticsearch/data
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+#    expose:
+#      - "9200"
+#    networks:
+#      esnet:
+#  #              ipv4_address: 172.0.0.10
 
   core-engine:
     image: brainwaves/core-engine:latest
@@ -176,13 +217,11 @@ services:
 volumes:
   esdata1:
     driver: local
+  kafka_data:
+    driver: local
 
 networks:
   dockernet:
     external: true
   esnet:
     driver: bridge
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: 172.0.0.0/24
