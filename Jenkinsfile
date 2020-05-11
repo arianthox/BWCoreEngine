@@ -1,3 +1,6 @@
+/* import shared library */
+@Library('jenkins-shared-library')_
+
 pipeline {
   environment {
       registry = "brainwaves/core-engine"
@@ -32,6 +35,7 @@ pipeline {
         script {
           docker.withRegistry( '', registryCredential ) {
             dockerImage.push()
+            dockerImage.push("latest")
           }
         }
       }
@@ -44,4 +48,9 @@ pipeline {
     }
 
   }
+  post {
+        always {
+           slackNotificator(currentBuild.currentResult)
+        }
+    }
 }
