@@ -27,6 +27,8 @@ public class BufferRawData implements Serializable {
     @NotBlank(message = "Device Id is mandatory")
     private String deviceId;
 
+    private String sessionId;
+
     private List<Integer> bufferRawEeg;
 
 }

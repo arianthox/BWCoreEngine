@@ -25,6 +25,12 @@ public class BufferRawController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/receive/{deviceId}/{sessionId}")
+    public ResponseEntity receive(@PathVariable("deviceId") String deviceId,@PathVariable("sessionId") String sessionId,@RequestBody @Valid BufferRawPacket... packet) {
+        packetService.send(deviceId,sessionId,packet);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/find/{deviceId}")
     public ResponseEntity<List<BufferRawData>> find(@PathVariable("deviceId") String deviceId) {
         return ResponseEntity.of(packetService.findByDeviceId(deviceId));

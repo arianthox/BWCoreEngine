@@ -21,16 +21,23 @@ public class PacketService {
         this.bufferRawRepository = bufferRawRepository;
     }
 
-    public void send(String deviceId,final BufferRawPacket packet) {
-        logger.info(String.format("Device: %s Packet: %s", deviceId,Collections.singletonList(packet.toHashMap()).toString()));
+
+    public void send(String deviceId,String sessionId,final BufferRawPacket packet) {
+        logger.info(String.format("Device: %s SessionId: %s Packet: %s", deviceId,sessionId,Collections.singletonList(packet.toHashMap()).toString()));
         BufferRawData bufferRawData= BufferRawData.builder()
                 .deviceId(deviceId)
+                .sessionId(sessionId)
                 .bufferRawEeg((Arrays.stream(packet.getBufferRawEeg()).boxed().collect(Collectors.toList())))
                 .build();
         bufferRawRepository.save(bufferRawData);
     }
+
     public void send(String deviceId,final BufferRawPacket... packetList) {
-        List.of(packetList).stream().forEach(bufferRawPacket -> send(deviceId,bufferRawPacket));
+        List.of(packetList).stream().forEach(bufferRawPacket -> send(deviceId,null,bufferRawPacket));
+    }
+
+    public void send(String deviceId,String sessionId, final BufferRawPacket... packetList) {
+        List.of(packetList).stream().forEach(bufferRawPacket -> send(deviceId,sessionId,bufferRawPacket));
     }
 
     public Optional<List<BufferRawData>> findByDeviceId(String deviceId){
