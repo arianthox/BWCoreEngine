@@ -110,7 +110,7 @@ services:
       - elasticsearch
     container_name: core-engine
     image: core-engine
-    build: ./
+    build: ./../
     ports:
       - "8001:8001"
     expose:
@@ -131,7 +131,7 @@ services:
       - core-engine
     container_name: bw-matcher
     image: bw-matcher
-    build: ./../BWMatcher/.
+    build: ./../../BWMatcher/.
     ports:
       - "8002:8002"
     expose:
@@ -148,7 +148,7 @@ services:
       - core-engine
     container_name: bw-listener
     image: bw-listener
-    build: ./../BWListener/.
+    build: ./../../BWListener/.
     ports:
       - "8003:8003"
     expose:
