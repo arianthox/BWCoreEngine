@@ -3,6 +3,7 @@ package com.globant.brainwaves.controller;
 import com.globant.brainwaves.domain.BufferRawData;
 import com.globant.brainwaves.model.BufferRawPacket;
 import com.globant.brainwaves.service.PacketService;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/core-engine/packet/raw")
+@FeignClient(name = "CoreEngine")
 public class BufferRawController {
 
     private final transient PacketService packetService;

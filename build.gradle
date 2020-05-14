@@ -50,6 +50,7 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'io.vavr:vavr:0.10.2'
     compileOnly 'org.projectlombok:lombok'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.1.2.RELEASE'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
