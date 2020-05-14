@@ -12,8 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/core-engine/packet/raw")
-@FeignClient(name = "CoreEngine")
-public class BufferRawController {
+public class BufferRawController implements com.globant.brainwaves.controller.api.BufferRawController {
 
     private final transient PacketService packetService;
 
