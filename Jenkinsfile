@@ -6,6 +6,7 @@ pipeline {
       registry = "brainwaves/core-engine"
       registryCredential = 'dockerhub'
       dockerImage = ''
+      def workspaceDir = pwd()
   }
   agent any
   stages {
@@ -23,8 +24,9 @@ pipeline {
 
     stage('build_Project'){
        steps{
-            pushd "./CoreEngine"
-            sh './gradlew clean build'
+            dir("CoreEngine"){
+                sh './gradlew clean build'
+            }
        }
     }
 
