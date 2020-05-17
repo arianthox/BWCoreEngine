@@ -1,1 +1,1 @@
-docker-compose up --build core-engine
+docker-compose up --build core-engine bw-matcher

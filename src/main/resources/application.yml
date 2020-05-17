@@ -13,6 +13,12 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: pagoz
+    template:
+      default-topic: input
   main:
     allow-bean-definition-overriding: true
 
