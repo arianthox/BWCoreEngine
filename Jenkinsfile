@@ -23,7 +23,7 @@ pipeline {
 
     stage('build_Project'){
        steps{
-            pushd ${workspaceDir}/CoreEngine
+            pushd "${workspaceDir}/CoreEngine"
             sh './gradlew clean build'
        }
     }
