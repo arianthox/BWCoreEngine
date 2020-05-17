@@ -10,21 +10,20 @@ pipeline {
   agent any
   stages {
 
-    stage('Cloning Git') {
-      steps {
-        checkout scm
-      }
-    }
-
-    stage('Checkout Commons') {
-          steps {
-            git branch: 'development',
-                url: 'git@github.corp.globant.com:BrainWaves/Commons.git'
-          }
+    stage('Checkout') {
+                steps {
+                    dir("Commons") {
+                        git branch: 'development',url: 'git@github.corp.globant.com:BrainWaves/Commons.git'
+                    }
+                    dir("CoreEngine"){
+                        checkout scm
+                    }
+                }
     }
 
     stage('build_Project'){
        steps{
+            pushd ${workspaceDir}/CoreEngine
             sh './gradlew clean build'
        }
     }
@@ -52,6 +51,10 @@ pipeline {
       steps{
         sh "docker rmi $registry:$BUILD_NUMBER"
       }
+    }
+
+    stage("Clean Workspace"){
+         step([$class: 'WsCleanup'])
     }
 
   }
