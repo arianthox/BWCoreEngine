@@ -6,7 +6,7 @@ pipeline {
       registry = "brainwaves/core-engine"
       registryCredential = 'dockerhub'
       dockerImage = ''
-      def workspaceDir = pwd()
+
   }
   agent any
   stages {
@@ -32,26 +32,32 @@ pipeline {
 
     stage('Building image') {
       steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        dir("CoreEngine"){
+            script {
+              dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            }
         }
       }
     }
 
     stage('Deploy Image') {
       steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
-            dockerImage.push("latest")
-          }
+        dir("CoreEngine"){
+            script {
+              docker.withRegistry( '', registryCredential ) {
+                dockerImage.push()
+                dockerImage.push("latest")
+              }
+            }
         }
       }
     }
 
     stage('Remove Unused docker image') {
       steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
+        dir("CoreEngine"){
+            sh "docker rmi $registry:$BUILD_NUMBER"
+        }
       }
     }
 
