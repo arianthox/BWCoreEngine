@@ -16,6 +16,13 @@ pipeline {
       }
     }
 
+    stage('Checkout Commons') {
+          steps {
+            git branch: 'development',
+                url: 'git@github.corp.globant.com:BrainWaves/Commons.git'
+          }
+    }
+
     stage('build_Project'){
        steps{
             sh './gradlew clean build'
