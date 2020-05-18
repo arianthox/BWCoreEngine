@@ -13,6 +13,12 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: waves
+    template:
+      default-topic: raw
   main:
     allow-bean-definition-overriding: true
 

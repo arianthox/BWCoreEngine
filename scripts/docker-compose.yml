@@ -133,7 +133,7 @@ services:
   core-engine:
     depends_on:
       - elasticsearch
-      #- broker
+      - broker
     container_name: core-engine
     image: core-engine
     build: ./../
@@ -151,11 +151,12 @@ services:
       SPRING_KAFKA_BOOTSTRAP-SERVERS: broker:29092
     links:
       - elasticsearch
-      #- broker
+      - broker
 
   bw-matcher:
     depends_on:
       - core-engine
+      - broker
     container_name: bw-matcher
     image: bw-matcher
     build: ./../../BWMatcher/.
@@ -166,9 +167,11 @@ services:
     networks:
       esnet:
     environment:
-      - "EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://core-engine:8001/eureka"
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://core-engine:8001/eureka
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: broker:29092
     links:
       - core-engine
+      - broker
 
   bw-listener:
     depends_on:

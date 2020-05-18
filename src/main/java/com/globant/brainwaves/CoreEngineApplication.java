@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @EnableEurekaClient
 @EnableEurekaServer
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.globant.brainwaves.commons","com.globant.brainwaves"})
 public class CoreEngineApplication {
     public static void main(String[] args) {
         SpringApplication.run(CoreEngineApplication.class, args);
