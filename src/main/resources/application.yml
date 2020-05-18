@@ -16,9 +16,9 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: pagoz
+      group-id: waves
     template:
-      default-topic: input
+      default-topic: raw
   main:
     allow-bean-definition-overriding: true
 
