@@ -6,6 +6,7 @@ pipeline {
       registry = "brainwaves/core-engine"
       registryCredential = 'dockerhub'
       dockerImage = ''
+      appName="CoreEngine"
 
   }
   agent any
@@ -16,7 +17,7 @@ pipeline {
                     dir("Commons") {
                         git branch: 'development',url: 'git@github.corp.globant.com:BrainWaves/Commons.git'
                     }
-                    dir("CoreEngine"){
+                    dir(appName){
                         checkout scm
                     }
                 }
@@ -24,7 +25,7 @@ pipeline {
 
     stage('build_Project'){
        steps{
-            dir("CoreEngine"){
+            dir(appName){
                 sh './gradlew clean build'
             }
        }
@@ -32,7 +33,7 @@ pipeline {
 
     stage('Building image') {
       steps{
-        dir("CoreEngine"){
+        dir(appName){
             script {
               dockerImage = docker.build registry + ":$BUILD_NUMBER"
             }
@@ -42,7 +43,7 @@ pipeline {
 
     stage('Deploy Image') {
       steps{
-        dir("CoreEngine"){
+        dir(appName){
             script {
               docker.withRegistry( '', registryCredential ) {
                 dockerImage.push()
@@ -55,7 +56,7 @@ pipeline {
 
     stage('Remove Unused docker image') {
       steps{
-        dir("CoreEngine"){
+        dir(appName){
             sh "docker rmi $registry:$BUILD_NUMBER"
         }
       }
