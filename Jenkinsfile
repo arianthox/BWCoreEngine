@@ -6,45 +6,66 @@ pipeline {
       registry = "brainwaves/core-engine"
       registryCredential = 'dockerhub'
       dockerImage = ''
+      appName="CoreEngine"
+
   }
   agent any
   stages {
 
-    stage('Cloning Git') {
-      steps {
-        checkout scm
-      }
+    stage('Checkout') {
+                steps {
+                    dir("Commons") {
+                        git branch: 'development',url: 'git@github.corp.globant.com:BrainWaves/Commons.git'
+                    }
+                    dir(appName){
+                        checkout scm
+                    }
+                }
     }
 
     stage('build_Project'){
        steps{
-            sh './gradlew clean build'
+            dir(appName){
+                sh './gradlew clean build'
+            }
        }
     }
 
     stage('Building image') {
       steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        dir(appName){
+            script {
+              dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            }
         }
       }
     }
 
     stage('Deploy Image') {
       steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
-            dockerImage.push("latest")
-          }
+        dir(appName){
+            script {
+              docker.withRegistry( '', registryCredential ) {
+                dockerImage.push()
+                dockerImage.push("latest")
+              }
+            }
         }
       }
     }
 
     stage('Remove Unused docker image') {
       steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
+        dir(appName){
+            sh "docker rmi $registry:$BUILD_NUMBER"
+        }
       }
+    }
+
+    stage("Clean Workspace"){
+        steps{
+         step([$class: 'WsCleanup'])
+        }
     }
 
   }

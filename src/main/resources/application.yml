@@ -13,14 +13,20 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: waves
+    template:
+      default-topic: raw
   main:
     allow-bean-definition-overriding: true
 
 eureka:
   instance:
-    hostname: CoreEngine
     lease-expiration-duration-in-seconds: 10
     lease-renewal-interval-in-seconds: 10
+    prefer-ip-address: true
   server:
     eviction-interval-timer-in-ms: 5000
     enable-self-preservation: true

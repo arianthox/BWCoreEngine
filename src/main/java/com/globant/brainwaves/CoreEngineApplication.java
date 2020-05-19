@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableEurekaClient
 @EnableEurekaServer
-@SpringBootApplication
 @EnableFeignClients
+@SpringBootApplication(scanBasePackages = {"com.globant.brainwaves.commons","com.globant.brainwaves"})
 public class CoreEngineApplication {
     public static void main(String[] args) {
         SpringApplication.run(CoreEngineApplication.class, args);
