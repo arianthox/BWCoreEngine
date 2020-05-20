@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/test")
-public class TestController  implements com.globant.brainwaves.controller.api.TestController {
+public class TestController {
 
-    @GetMapping("/gettesting")
-    public ResponseEntity<String> receive(@PathVariable("name") String name){
+    @GetMapping("/gettesting/{name}")
+    public ResponseEntity<String> find(@PathVariable("name") String name){
         return ResponseEntity.ok().build();
     }
 
