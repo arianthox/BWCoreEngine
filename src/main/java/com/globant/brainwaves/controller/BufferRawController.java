@@ -3,7 +3,6 @@ package com.globant.brainwaves.controller;
 import com.globant.brainwaves.domain.BufferRawData;
 import com.globant.brainwaves.model.BufferRawPacket;
 import com.globant.brainwaves.service.PacketService;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
