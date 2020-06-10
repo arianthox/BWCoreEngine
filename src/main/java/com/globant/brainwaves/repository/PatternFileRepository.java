@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PatternFileRepository  extends ElasticsearchRepository<PatternFileData, String> {
-    Optional<List<PatternFileData>> findAllByType(String type);
+    Optional<List<PatternFileData>> findByType(String type);
 
     Optional<PatternFileData> findByName(String name);
 

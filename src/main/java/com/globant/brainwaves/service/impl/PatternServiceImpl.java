@@ -44,7 +44,7 @@ public class PatternServiceImpl implements com.globant.brainwaves.service.Patter
     @Override
     public List<PatternFileInfoDTO> getFilesByType(String typeName) {
             Optional<List<PatternFileData>> filesList =
-                    patternFileRepository.findAllByType(typeName);
+                    patternFileRepository.findByType(typeName);
             if(filesList.get().isEmpty()){
                 return null;
             }
