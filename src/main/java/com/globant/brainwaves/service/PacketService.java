@@ -4,6 +4,7 @@ import com.globant.brainwaves.commons.adapter.KafkaProducer;
 import com.globant.brainwaves.domain.BufferRawData;
 import com.globant.brainwaves.model.BufferRawPacket;
 import com.globant.brainwaves.repository.BufferRawRepository;
+import lombok.Data;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,8 @@ import java.util.stream.Collectors;
 
 @Log
 @Service
+@Data
 public class PacketService {
-
-    private Logger logger = Logger.getLogger(PacketService.class.getName());
 
     private final BufferRawRepository bufferRawRepository;
 
@@ -29,7 +29,7 @@ public class PacketService {
 
 
     public void send(String deviceId, String sessionId, final BufferRawPacket packet) {
-        logger.info(String.format("Device: %s SessionId: %s Packet: %s", deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
+        log.info(String.format("Device: %s SessionId: %s Packet: %s", deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
 
         BufferRawData bufferRawData = BufferRawData.builder()
                 .deviceId(deviceId)
@@ -55,4 +55,6 @@ public class PacketService {
     public Optional<List<BufferRawData>> findByDeviceId(String deviceId) {
         return bufferRawRepository.findAllByDeviceId(deviceId);
     }
+
+
 }
