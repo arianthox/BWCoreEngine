@@ -1,0 +1,58 @@
+package com.globant.brainwaves.service;
+
+import com.globant.brainwaves.commons.adapter.KafkaProducer;
+import com.globant.brainwaves.commons.persistence.elastic.domain.BufferRawData;
+import com.globant.brainwaves.commons.model.BufferRawPacket;
+import com.globant.brainwaves.commons.persistence.elastic.repository.BufferRawPacketRepository;
+import lombok.extern.java.Log;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+@Log
+@Service
+public class BufferRawPacketService {
+
+
+    private final transient BufferRawPacketRepository packetRepository;
+
+    private final transient KafkaProducer kafkaProducer;
+
+
+    public BufferRawPacketService(BufferRawPacketRepository packetRepository, KafkaProducer kafkaProducer) {
+        this.packetRepository = packetRepository;
+        this.kafkaProducer = kafkaProducer;
+    }
+
+
+    public void send(String deviceId, String sessionId, final BufferRawPacket packet) {
+        log.info(String.format("Packet[%s] Device[%s] SessionId[%s] - %s", packet.getClass().getName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
+
+//        BufferRawData bufferRawData = BufferRawData.builder()
+//                .deviceId(deviceId)
+//                .sessionId(sessionId)
+//                .bufferRawEeg((Arrays.stream(packet.getBufferRawEeg()).boxed().collect(Collectors.toList())))
+//                .build();
+
+        kafkaProducer.send(packet, done -> {
+            packetRepository.save(packet.toData());
+            log.fine("Message sent to broker");
+        });
+
+    }
+
+    public void send(String deviceId, final BufferRawPacket... packetList) {
+        List.of(packetList).stream().forEach(bufferRawPacket -> send(deviceId, null, bufferRawPacket));
+    }
+
+    public void send(String deviceId, String sessionId, final BufferRawPacket... packetList) {
+        List.of(packetList).stream().forEach(bufferRawPacket -> send(deviceId, sessionId, bufferRawPacket));
+    }
+
+
+    public Optional<List<BufferRawData>> findByDeviceId(String deviceId) {
+        return packetRepository.findAllByDeviceId(deviceId);
+    }
+}

@@ -1,8 +1,8 @@
 package com.globant.brainwaves.controller;
 
-import com.globant.brainwaves.domain.BufferRawData;
-import com.globant.brainwaves.model.BufferRawPacket;
-import com.globant.brainwaves.service.PacketService;
+import com.globant.brainwaves.commons.persistence.elastic.domain.BufferRawData;
+import com.globant.brainwaves.commons.model.BufferRawPacket;
+import com.globant.brainwaves.service.BufferRawPacketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +11,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/core-engine/packet/raw")
-public class BufferRawController implements com.globant.brainwaves.controller.api.BufferRawController {
+public class BufferRawPacketController {
 
-    private final transient PacketService packetService;
+    private final transient BufferRawPacketService packetService;
 
-    public BufferRawController(PacketService packetService) {
+    public BufferRawPacketController(BufferRawPacketService packetService) {
         this.packetService = packetService;
     }
 
