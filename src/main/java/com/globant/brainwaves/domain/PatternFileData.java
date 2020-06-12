@@ -21,8 +21,6 @@ public class PatternFileData implements Serializable {
     private static final long serialVersionUID = 2020128099084761251L;
 
     @Id
-    private String id;
-
     private String name;
 
     private String type;

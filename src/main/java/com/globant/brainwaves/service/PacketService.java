@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Log
 @Service
-@Data
 public class PacketService {
 
     private final BufferRawRepository bufferRawRepository;

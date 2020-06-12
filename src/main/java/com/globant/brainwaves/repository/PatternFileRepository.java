@@ -13,4 +13,7 @@ public interface PatternFileRepository  extends ElasticsearchRepository<PatternF
 
     Optional<PatternFileData> findByName(String name);
 
+    void deleteById(String id);
+
+
 }
