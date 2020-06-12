@@ -28,7 +28,8 @@ public class ChannelPacketService {
     }
 
     public void send(String deviceId, String sessionId, final ChannelPacket packet) {
-        log.info(String.format("Packet[%s] Device[%s] SessionId[%s] - %s", packet.getClass().getName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
+        log.info(String.format("[%s] [%s] [%s] - %s", packet.getClass().getSimpleName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
+
         kafkaProducer.send("channel",packet, done -> {
             log.fine("Message sent to broker");
         });

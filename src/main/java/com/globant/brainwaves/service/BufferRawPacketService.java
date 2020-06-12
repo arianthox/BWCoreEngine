@@ -28,15 +28,10 @@ public class BufferRawPacketService {
 
 
     public void send(String deviceId, String sessionId, final BufferRawPacket packet) {
-        log.info(String.format("Packet[%s] Device[%s] SessionId[%s] - %s", packet.getClass().getName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
-
-//        BufferRawData bufferRawData = BufferRawData.builder()
-//                .deviceId(deviceId)
-//                .sessionId(sessionId)
-//                .bufferRawEeg((Arrays.stream(packet.getBufferRawEeg()).boxed().collect(Collectors.toList())))
-//                .build();
+        log.info(String.format("[%s] [%s] [%s] - %s", packet.getClass().getSimpleName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
 
         kafkaProducer.send(packet, done -> {
+            log.fine("Saving to Repo:"+packet.toData());
             packetRepository.save(packet.toData());
             log.fine("Message sent to broker");
         });
