@@ -1,10 +1,9 @@
 package com.globant.brainwaves.controller;
 
 import com.globant.brainwaves.CoreEngineApplication;
-import com.globant.brainwaves.domain.BufferRawData;
-import com.globant.brainwaves.model.BufferRawPacket;
-import com.globant.brainwaves.model.Packet;
-import com.globant.brainwaves.service.PacketService;
+import com.globant.brainwaves.commons.persistence.elastic.domain.BufferRawData;
+import com.globant.brainwaves.commons.model.BufferRawPacket;
+import com.globant.brainwaves.service.BufferRawPacketService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = CoreEngineApplication.class)
 @ActiveProfiles(profiles = "mock")
 @AutoConfigureMockMvc
-public class BufferRawControllerTest {
+public class BufferRawPacketControllerTest {
 
     private static final String API_ENDPOINT = "/api/core-engine/packet/raw/";
 
@@ -49,7 +46,7 @@ public class BufferRawControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    private PacketService packetService;
+    private BufferRawPacketService bufferRawPacketService;
 
     private static final String DEVICE_ID="1";
 
@@ -61,7 +58,7 @@ public class BufferRawControllerTest {
                 .bufferRawEeg(Arrays.stream(bufferRawPacket.getBufferRawEeg()).boxed().collect(Collectors.toList()))
                 .deviceId(DEVICE_ID).build();
 
-        when(packetService.findByDeviceId(DEVICE_ID)).thenReturn(Optional.of(List.of(bufferRawData)));
+        when(bufferRawPacketService.findByDeviceId(DEVICE_ID)).thenReturn(Optional.of(List.of(bufferRawData)));
 
         mvc.perform(MockMvcRequestBuilders.post(String.format("%s%s%s", API_ENDPOINT, API_RECEIVE_METHOD,DEVICE_ID))
                 .contentType(MediaType.APPLICATION_JSON)

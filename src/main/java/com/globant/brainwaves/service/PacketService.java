@@ -1,10 +1,9 @@
 package com.globant.brainwaves.service;
 
 import com.globant.brainwaves.commons.adapter.KafkaProducer;
-import com.globant.brainwaves.domain.BufferRawData;
-import com.globant.brainwaves.model.BufferRawPacket;
-import com.globant.brainwaves.repository.BufferRawRepository;
-import lombok.Data;
+import com.globant.brainwaves.commons.model.BufferRawPacket;
+import com.globant.brainwaves.commons.model.BufferRawRepository;
+import com.globant.brainwaves.commons.persistence.elastic.domain.BufferRawData;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
