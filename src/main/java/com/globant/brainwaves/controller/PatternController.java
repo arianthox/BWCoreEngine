@@ -1,7 +1,7 @@
 package com.globant.brainwaves.controller;
 
-import com.globant.brainwaves.commons.dto.PatternFileInfoDTO;
-import com.globant.brainwaves.commons.dto.ResponseDTO;
+import com.globant.brainwaves.commons.model.PatternFileInfoDTO;
+import com.globant.brainwaves.commons.model.ResponseDTO;
 import com.globant.brainwaves.service.PatternService;
 import feign.FeignException;
 import lombok.extern.java.Log;
@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/io")
 @Log
-public class PatternController implements com.globant.brainwaves.commons.api.PatternController {
+public class PatternController {
 
     private final PatternService patternService;
 
@@ -23,12 +23,12 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
     }
 
     @GetMapping("/pattern/name/{name}")
-    public ResponseEntity<ResponseDTO<PatternFileInfoDTO>> findByName(@PathVariable("name") String name){
+    public ResponseEntity<ResponseDTO<PatternFileInfoDTO>> findByName(@PathVariable("name") String name) {
         ResponseDTO<PatternFileInfoDTO> responseDTO = new ResponseDTO<>();
-        try{
-            if(name == null || name.equals("")){
+        try {
+            if (name == null || name.equals("")) {
                 log.info(HttpStatus.BAD_REQUEST.toString());
-                throw  new FeignException.BadRequest( "Not valid name...", null, null);
+                throw new FeignException.BadRequest("Not valid name...", null, null);
             }
             PatternFileInfoDTO pfd = patternService.getPatternByName(name);
 
@@ -36,7 +36,7 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
             responseDTO.setStatusCode(HttpStatus.OK.value());
             responseDTO.setContent(pfd);
             return ResponseEntity.ok().body(responseDTO);
-        }catch (FeignException.BadRequest br){
+        } catch (FeignException.BadRequest br) {
             responseDTO.setMessage(br.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -45,10 +45,10 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
     }
 
     @PostMapping("/pattern")
-    public ResponseEntity<ResponseDTO<String>> savePattern(@RequestBody PatternFileInfoDTO pattern){
+    public ResponseEntity<ResponseDTO<String>> savePattern(@RequestBody PatternFileInfoDTO pattern) {
         ResponseDTO<String> responseDTO = new ResponseDTO<>();
-        try{
-            if(pattern == null) {
+        try {
+            if (pattern == null) {
                 log.info(HttpStatus.BAD_REQUEST.toString());
                 throw new FeignException.BadRequest("Not valid parameters...", null, null);
             }
@@ -56,7 +56,7 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
             responseDTO.setMessage(HttpStatus.OK.name());
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        }catch (FeignException.BadRequest br){
+        } catch (FeignException.BadRequest br) {
             responseDTO.setMessage(br.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -65,11 +65,11 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
 
     @GetMapping("/pattern/type/{type}")
     public ResponseEntity<ResponseDTO<List<PatternFileInfoDTO>>>
-        findByType(@PathVariable("type") String type) throws FeignException.BadRequest {
+    findByType(@PathVariable("type") String type) throws FeignException.BadRequest {
         ResponseDTO<List<PatternFileInfoDTO>> responseDTO = new ResponseDTO<>();
         try {
-            if (type.isBlank() ) {
-                log.info("Blank type "+ HttpStatus.BAD_REQUEST.toString());
+            if (type.isBlank()) {
+                log.info("Blank type " + HttpStatus.BAD_REQUEST.toString());
                 throw new FeignException.BadRequest("Not valid parameters...", null, null);
             }
             List<PatternFileInfoDTO> fileList = patternService.getFilesByType(type);
@@ -77,7 +77,7 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
             responseDTO.setContent(fileList);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        }catch (FeignException.BadRequest br){
+        } catch (FeignException.BadRequest br) {
             responseDTO.setMessage(br.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -86,16 +86,16 @@ public class PatternController implements com.globant.brainwaves.commons.api.Pat
 
 
     @DeleteMapping(value = "/pattern/delete/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable("id") String id){
+    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
         ResponseDTO<PatternFileInfoDTO> responseDTO = new ResponseDTO<>();
         try {
-            if (id.isBlank() ) {
-                log.info("Blank id request "+ HttpStatus.BAD_REQUEST.toString());
+            if (id.isBlank()) {
+                log.info("Blank id request " + HttpStatus.BAD_REQUEST.toString());
                 throw new FeignException.BadRequest("Not valid parameters...", null, null);
             }
             String response = patternService.remove(id);
             return ResponseEntity.ok().body(response);
-        }catch (FeignException.BadRequest br){
+        } catch (FeignException.BadRequest br) {
             responseDTO.setMessage(br.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST.name());

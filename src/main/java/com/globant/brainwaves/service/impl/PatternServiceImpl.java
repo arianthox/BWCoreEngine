@@ -1,22 +1,20 @@
 package com.globant.brainwaves.service.impl;
 
-import com.globant.brainwaves.domain.PatternFileData;
-import com.globant.brainwaves.commons.dto.PatternFileInfoDTO;
-import com.globant.brainwaves.repository.PatternFileRepository;
+import com.globant.brainwaves.commons.model.PatternFileInfoDTO;
+import com.globant.brainwaves.commons.persistence.elastic.domain.PatternFileData;
+import com.globant.brainwaves.commons.persistence.elastic.repository.PatternFileRepository;
+import com.globant.brainwaves.service.PatternService;
 import feign.FeignException;
-import lombok.Data;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Log
 @Service
-@Data
-public class PatternServiceImpl implements com.globant.brainwaves.service.PatternService {
+public class PatternServiceImpl implements PatternService {
 
         private final PatternFileRepository patternFileRepository;
 
