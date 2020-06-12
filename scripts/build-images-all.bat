@@ -6,7 +6,7 @@ for /d %%a in ("..\..\*") do (
         echo +++++++++++++++++++++++++++++++++
         PUSHD %%a
         REM start "Build %%a" cmd-build-image.bat
-        call cmd-build-image.bat > .log
+        call cmd-build-image.bat > .logsi
         POPD
         @echo off
     ) 
