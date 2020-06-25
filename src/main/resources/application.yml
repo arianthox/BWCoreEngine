@@ -14,7 +14,7 @@ spring:
     hibernate:
       ddl-auto: update
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: broker:9092
     consumer:
       group-id: waves
     template:
@@ -56,10 +56,10 @@ logging:
     root: error
     org:
       apache:
-        kafka: error
+        kafka: info
     com:
       globant:
         brainwaves: info
       netflix:
-        discovery: 'OFF'
-        eureka: 'OFF'
+        discovery: off
+        eureka: off
