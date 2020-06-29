@@ -16,62 +16,52 @@ import java.util.stream.Collectors;
 @Service
 public class PatternServiceImpl implements PatternService {
 
-        private final PatternFileRepository patternFileRepository;
+    private final transient PatternFileRepository patternFileRepository;
 
 
-        public PatternServiceImpl(PatternFileRepository patternFileRepository) {
-            this.patternFileRepository = patternFileRepository;
-        }
+    public PatternServiceImpl(PatternFileRepository patternFileRepository) {
+        this.patternFileRepository = patternFileRepository;
+    }
 
 
-        @Override
+    @Override
     public void savePattern(PatternFileInfoDTO pfi) {
-            log.info("Into savePattern...");
-            PatternFileData pfd= PatternFileData.builder()
-                    .data(pfi.content)
-                    .name(pfi.name)
-                    .type(pfi.type)
-                    .build();
-            log.info("Content type... " + pfi.type);
-            patternFileRepository.save(pfd);
+        log.info("Into savePattern...");
+        PatternFileData pfd = PatternFileData.builder()
+                .data(pfi.content)
+                .name(pfi.name)
+                .type(pfi.type)
+                .build();
+        log.info("Content type... " + pfi.type);
+        patternFileRepository.save(pfd);
     }
 
     @Override
     public List<PatternFileInfoDTO> getFilesByType(String typeName) {
-            log.info("getFilesByType");
-            Optional<List<PatternFileData>> filesList =
-                    patternFileRepository.findByType(typeName);
-            if(filesList.get().isEmpty()){
-                return null;
-            }
-            log.info(" antes de return getFilesByType");
-            log.info("resultado: " + filesList.get().size());
-            log.info("resultado: " + filesList.get().get(1).getName());
-            List<PatternFileData> data = filesList.get();
-            data.forEach(p-> new PatternFileInfoDTO(p.getName(), p.getData(),
-                    p.getType()));
-
-            List<PatternFileInfoDTO> result = data.stream().map(temp -> {
-                PatternFileInfoDTO obj =
-                        new PatternFileInfoDTO(temp.getName(), temp.getData(), temp.getType());
-            return obj;
-             }).collect(Collectors.toList());
-            return result;
+        log.info("getFilesByType");
+        Optional<List<PatternFileData>> filesList =
+                patternFileRepository.findByType(typeName);
+        if (filesList.get().isEmpty()) {
+            return null;
+        }
+        return filesList.get().stream().map(temp ->
+                    new PatternFileInfoDTO(temp.getName(), temp.getData(), temp.getType())
+        ).collect(Collectors.toList());
     }
 
     @Override
-    public PatternFileInfoDTO getPatternByName(String name){
-            Optional<PatternFileData> patternFileData = patternFileRepository.findByName(name);
-            if(!patternFileData.isPresent()){
-                throw new FeignException.BadRequest("Not found..", null, null);
-            }
-            PatternFileData data = patternFileData.get();
-            return  PatternFileInfoDTO.builder().content(data.getData()).name(data.getName())
-                    .type(data.getType()).build();
+    public PatternFileInfoDTO getPatternByName(String name) {
+        Optional<PatternFileData> patternFileData = patternFileRepository.findByName(name);
+        if (!patternFileData.isPresent()) {
+            throw new FeignException.BadRequest("Not found..", null, null);
+        }
+        PatternFileData data = patternFileData.get();
+        return PatternFileInfoDTO.builder().content(data.getData()).name(data.getName())
+                .type(data.getType()).build();
     }
 
     @Override
-    public String remove(String id){
+    public String remove(String id) {
         patternFileRepository.deleteById(id);
         return "OK";
     }

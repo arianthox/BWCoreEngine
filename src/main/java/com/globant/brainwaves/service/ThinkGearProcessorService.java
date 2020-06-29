@@ -12,11 +12,9 @@ import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 import com.globant.brainwaves.commons.adapter.KafkaConsumer;
 import com.globant.brainwaves.commons.adapter.KafkaProducer;
-import com.globant.brainwaves.commons.model.BufferRawPacket;
 import com.globant.brainwaves.commons.model.ConsumerID;
 import com.globant.brainwaves.commons.model.TopicID;
 import com.globant.brainwaves.commons.model.WavePacket;
-import com.globant.brainwaves.commons.utils.CommonUtil;
 import com.google.gson.Gson;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
@@ -33,7 +31,7 @@ public class ThinkGearProcessorService {
     private final transient KafkaProducer kafkaProducer;
 
     private static final Gson gson = new Gson();
-    final Function<Throwable, Supervision.Directive> decider =
+    final static Function<Throwable, Supervision.Directive> decider =
             exc -> {
                 if (exc instanceof Exception) {
                     log.log(Level.WARNING, "Error Parsing Class");
@@ -43,8 +41,8 @@ public class ThinkGearProcessorService {
                     return Supervision.stop();
                 }
             };
-    private final KafkaConsumer kafkaConsumer;
-    private ActorSystem system;
+    private final transient KafkaConsumer kafkaConsumer;
+    private final transient ActorSystem system;
 
     public ThinkGearProcessorService(KafkaConsumer kafkaConsumer, KafkaProducer kafkaProducer) {
         this.kafkaConsumer = kafkaConsumer;
