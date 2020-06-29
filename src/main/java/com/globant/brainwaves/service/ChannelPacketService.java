@@ -1,8 +1,9 @@
 package com.globant.brainwaves.service;
 
 import com.globant.brainwaves.commons.adapter.KafkaProducer;
-import com.globant.brainwaves.commons.persistence.elastic.domain.ChannelData;
 import com.globant.brainwaves.commons.model.ChannelPacket;
+import com.globant.brainwaves.commons.model.TopicID;
+import com.globant.brainwaves.commons.persistence.elastic.domain.ChannelData;
 import com.globant.brainwaves.commons.persistence.elastic.repository.ChannelPacketRepository;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Log
 @Service
@@ -30,7 +30,7 @@ public class ChannelPacketService {
     public void send(String deviceId, String sessionId, final ChannelPacket packet) {
         log.info(String.format("[%s] [%s] [%s] - %s", packet.getClass().getSimpleName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
 
-        kafkaProducer.send("channel",packet, done -> {
+        kafkaProducer.send(TopicID.CHANNEL.from(packet.getClass()),packet, done -> {
             log.fine("Message sent to broker");
         });
 

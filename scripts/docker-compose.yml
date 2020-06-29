@@ -168,9 +168,6 @@ services:
     networks:
       esnet:
     environment:
-      SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME: elasticsearch
-      SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES: elasticsearch:9300
-      SPRING_DATA_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://core-engine:8001/eureka
       SPRING_KAFKA_BOOTSTRAP-SERVERS: broker:29092
     links:

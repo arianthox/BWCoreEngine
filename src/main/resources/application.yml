@@ -56,7 +56,7 @@ logging:
     root: error
     org:
       apache:
-        kafka: info
+        kafka: error
     com:
       globant:
         brainwaves: info
