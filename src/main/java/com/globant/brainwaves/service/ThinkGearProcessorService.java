@@ -7,7 +7,6 @@ import akka.actor.typed.ActorSystem;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.japi.function.Function;
 import akka.stream.ActorAttributes;
-import akka.stream.Supervision;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 import com.globant.brainwaves.commons.adapter.KafkaConsumer;
@@ -24,29 +23,33 @@ import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 
+import static akka.stream.Supervision.*;
+
 @Component
 @Log
 public class ThinkGearProcessorService {
 
     private final transient KafkaProducer kafkaProducer;
 
-    private static final Gson gson = new Gson();
-    final static Function<Throwable, Supervision.Directive> decider =
+    private final transient Gson gson;
+
+    final static Function<Throwable, Directive> decider =
             exc -> {
                 if (exc instanceof Exception) {
-                    log.log(Level.WARNING, "Error Parsing Class");
-                    return Supervision.resume();
+                    log.log(Level.SEVERE, exc.getMessage());
+                    return resume();
                 } else {
                     log.log(Level.SEVERE, "Exception:" + exc.getMessage());
-                    return Supervision.stop();
+                    return stop();
                 }
             };
     private final transient KafkaConsumer kafkaConsumer;
     private final transient ActorSystem system;
 
-    public ThinkGearProcessorService(KafkaConsumer kafkaConsumer, KafkaProducer kafkaProducer) {
+    public ThinkGearProcessorService(KafkaConsumer kafkaConsumer, KafkaProducer kafkaProducer,Gson gson) {
         this.kafkaConsumer = kafkaConsumer;
         this.kafkaProducer = kafkaProducer;
+        this.gson=gson;
         system = ActorSystem.create(Behaviors.empty(), "kafka-system");
     }
 
