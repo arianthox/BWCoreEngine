@@ -14,6 +14,7 @@ import com.globant.brainwaves.commons.adapter.KafkaProducer;
 import com.globant.brainwaves.commons.model.ConsumerID;
 import com.globant.brainwaves.commons.model.TopicID;
 import com.globant.brainwaves.commons.model.WavePacket;
+import com.globant.brainwaves.commons.utils.CommonUtil;
 import com.google.gson.Gson;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
@@ -61,12 +62,8 @@ public class ThinkGearProcessorService {
                     .map(param -> gson.fromJson(param.value(), WavePacket.class))
                     .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
             final Sink<WavePacket, CompletionStage<Done>> sink = Sink.foreach(packet -> {
-                log.log(Level.INFO, "Packet: {0}", packet);
-
-                TopicID topicID=TopicID.CHANNEL.from(packet.getPacket().getClass());
-                kafkaProducer.send(topicID, packet, done -> {
-                    log.log(Level.FINE, "Sent Topic[{0}] - Packet[{1}]", Arrays.asList(topicID, packet));
-                });
+                String topicID=String.format(TopicID.CHANNEL.toString(), CommonUtil.getTopicName(packet.getPacket().getClass()));
+                kafkaProducer.send(topicID, packet, done -> log.log(Level.INFO, "Sent Topic[{0}] - Packet[{1}]", Arrays.asList(topicID, packet)));
 
             });
 
