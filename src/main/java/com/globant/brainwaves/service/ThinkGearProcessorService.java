@@ -14,13 +14,13 @@ import com.globant.brainwaves.commons.adapter.KafkaProducer;
 import com.globant.brainwaves.commons.model.ConsumerID;
 import com.globant.brainwaves.commons.model.TopicID;
 import com.globant.brainwaves.commons.model.WavePacket;
-import com.globant.brainwaves.commons.utils.CommonUtil;
+import com.globant.brainwaves.commons.model.WaveTrainingPacket;
+import com.globant.brainwaves.stream.WaveTrainingPacketGraphStage;
 import com.google.gson.Gson;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 
@@ -57,16 +57,16 @@ public class ThinkGearProcessorService {
     @PostConstruct
     private void initialize() {
         log.info("Initializing Kafka Consumer");
+        WaveTrainingPacketGraphStage waveTrainingPacketGraphStage=new WaveTrainingPacketGraphStage();
+
         this.kafkaConsumer.consume(ConsumerID.CORE_ENGINE, TopicID.THINK_GEAR_READER, record -> {
-            final Source<WavePacket, NotUsed> flow = Source.single(record)
+            final Source<WaveTrainingPacket, NotUsed> flow = Source.single(record)
                     .map(param -> gson.fromJson(param.value(), WavePacket.class))
+                    .via(waveTrainingPacketGraphStage)
                     .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
-            final Sink<WavePacket, CompletionStage<Done>> sink = Sink.foreach(packet -> {
-                String topicID=String.format(TopicID.CHANNEL.toString(), CommonUtil.getTopicName(packet.getPacket().getClass()));
-                kafkaProducer.send(topicID, packet, done -> log.log(Level.INFO, "Sent Topic[{0}] - Packet[{1}]", Arrays.asList(topicID, packet)));
-
+            final Sink<WaveTrainingPacket, CompletionStage<Done>> sink = Sink.foreach(packet -> {
+                kafkaProducer.send(TopicID.MATCHER_TRAINER.toString(), packet, done -> log.log(Level.INFO, "Sent Packet[{0}]", packet.toString()));
             });
-
 
             return flow.runWith(sink, system);
 
