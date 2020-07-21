@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 @Log
@@ -26,19 +27,19 @@ public class PatternServiceImpl implements PatternService {
 
     @Override
     public void savePattern(PatternFileInfoDTO pfi) {
-        log.info("Into savePattern...");
+        log.log(Level.FINE,"Into savePattern...");
         PatternFileData pfd = PatternFileData.builder()
                 .data(pfi.content)
                 .name(pfi.name)
                 .type(pfi.type)
                 .build();
-        log.info("Content type... " + pfi.type);
+        log.log(Level.FINE,"Content type... " + pfi.type);
         patternFileRepository.save(pfd);
     }
 
     @Override
     public List<PatternFileInfoDTO> getFilesByType(String typeName) {
-        log.info("getFilesByType");
+        log.log(Level.FINE,"getFilesByType");
         Optional<List<PatternFileData>> filesList =
                 patternFileRepository.findByType(typeName);
         if (filesList.get().isEmpty()) {

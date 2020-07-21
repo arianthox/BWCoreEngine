@@ -12,6 +12,7 @@ import com.globant.brainwaves.commons.model.*;
 import lombok.extern.java.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Level;
 
@@ -39,38 +40,33 @@ public class WaveTrainingPacketGraphStage extends GraphStage<FlowShape<WavePacke
         return new GraphStageLogic(shape) {
 
             {
-                setHandler(
-                        in,
-                        new AbstractInHandler() {
-                            @Override
-                            public void onPush() {
-                                WavePacket packet = grab(in);
-                                    if(packet.getPacket() instanceof BufferRawPacket){
-                                        log.info("Buffer Element: "+packet.toString());
-                                        waveTrainingPacket.getBuffer().add(packet);
-                                    }else if( !(packet.getPacket() instanceof StatusPacket) && !(packet.getPacket() instanceof ChannelPacket) ){
-
-                                        if(waveTrainingPacket.getBuffer().size()>=1) {
-                                            waveTrainingPacket.setHeader(packet);
-                                            push(out, waveTrainingPacket);
-                                            log.info("Pushing Element: "+waveTrainingPacket.getBuffer().size()+" - "+packet.getPacket().getClass());
-                                        }else{
-                                            log.log(Level.INFO,"Discarding WaveTrainingPacket [{0}]",packet.getPacket().getClass());
-                                        }
-                                        reset();
-                                    }
-
+                setHandler(in, new AbstractInHandler() {
+                    @Override
+                    public void onPush() {
+                        WavePacket packet = grab(in);
+                        if(packet.getPacket() instanceof BufferRawPacket){
+                            log.log(Level.FINE,"Buffer Element:{0} ",packet.toString());
+                            waveTrainingPacket.getBuffer().add(packet);
+                        }else if( !(packet.getPacket() instanceof StatusPacket)){
+                            if(waveTrainingPacket.getBuffer().size()>=1) {
+                                waveTrainingPacket.setHeader(packet);
+                                push(out, waveTrainingPacket);
+                                log.log(Level.FINE,"Pushing Element: {0} - {1}", Arrays.asList(packet.getPacket().getClass(),waveTrainingPacket.getBuffer().size()));
+                            }else{
+                                log.log(Level.WARNING,"Discarding [{0}]",packet.getPacket().getClass().getSimpleName());
                             }
-                        });
+                            reset();
+                        }
 
-                setHandler(
-                        out,
-                        new AbstractOutHandler() {
-                            @Override
-                            public void onPull() throws Exception {
-                                pull(in);
-                            }
-                        });
+                    }
+                });
+
+                setHandler(out, new AbstractOutHandler() {
+                    @Override
+                    public void onPull() throws Exception {
+                        pull(in);
+                    }
+                });
             }
         };
     }

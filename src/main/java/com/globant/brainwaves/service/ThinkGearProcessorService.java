@@ -65,7 +65,7 @@ public class ThinkGearProcessorService {
                     .via(waveTrainingPacketGraphStage)
                     .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
             final Sink<WaveTrainingPacket, CompletionStage<Done>> sink = Sink.foreach(packet -> {
-                kafkaProducer.send(TopicID.MATCHER_TRAINER.toString(), packet, done -> log.log(Level.INFO, "Sent Packet[{0}]", packet.toString()));
+                kafkaProducer.send(TopicID.MATCHER_TRAINER.toString(), packet, done -> log.log(Level.INFO, "Packet - [{0}]", packet.getHeader().getPacket().getClass().getSimpleName()));
             });
 
             return flow.runWith(sink, system);
