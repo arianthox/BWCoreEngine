@@ -1,7 +1,7 @@
 spring:
   data:
     elasticsearch:
-      cluster-nodes: 127.0.0.1:9300
+#      cluster-nodes: 127.0.0.1:9300
       rest_uris: http://127.0.0.1:9200
   kafka:
     bootstrap-servers: 127.0.0.1:29092

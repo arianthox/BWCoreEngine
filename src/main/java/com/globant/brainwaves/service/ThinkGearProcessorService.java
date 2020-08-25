@@ -21,6 +21,7 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 
@@ -47,30 +48,30 @@ public class ThinkGearProcessorService {
     private final transient KafkaConsumer kafkaConsumer;
     private final transient ActorSystem system;
 
-    public ThinkGearProcessorService(KafkaConsumer kafkaConsumer, KafkaProducer kafkaProducer,Gson gson) {
+    public ThinkGearProcessorService(KafkaConsumer kafkaConsumer, KafkaProducer kafkaProducer, Gson gson) {
         this.kafkaConsumer = kafkaConsumer;
         this.kafkaProducer = kafkaProducer;
-        this.gson=gson;
+        this.gson = gson;
         system = ActorSystem.create(Behaviors.empty(), "kafka-system");
     }
 
     @PostConstruct
     private void initialize() {
         log.info("Initializing Kafka Consumer");
-        WaveTrainingPacketGraphStage waveTrainingPacketGraphStage=new WaveTrainingPacketGraphStage();
+        WaveTrainingPacketGraphStage waveTrainingPacketGraphStage = new WaveTrainingPacketGraphStage();
 
-        this.kafkaConsumer.consume(ConsumerID.CORE_ENGINE, TopicID.THINK_GEAR_READER, record -> {
+        this.kafkaConsumer.consume(ConsumerID.CORE_ENGINE, TopicID.THINK_GEAR_READER.setConsumerProcess(record -> {
             final Source<WaveTrainingPacket, NotUsed> flow = Source.single(record)
                     .map(param -> gson.fromJson(param.value(), WavePacket.class))
                     .via(waveTrainingPacketGraphStage)
                     .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
             final Sink<WaveTrainingPacket, CompletionStage<Done>> sink = Sink.foreach(packet -> {
-                kafkaProducer.send(TopicID.MATCHER_TRAINER.toString(), packet, done -> log.log(Level.INFO, "Packet - [{0}]", packet.getHeader().getPacket().getClass().getSimpleName()));
+                kafkaProducer.send(TopicID.MATCHER_TRAINER.setProducerAction(done -> log.log(Level.INFO, "Packet - {0}", Arrays.asList(packet.getHeader().getPacket().getClass().getSimpleName(), packet.getBuffer().size()))), packet);
             });
 
             return flow.runWith(sink, system);
 
-        });
+        }));
 
     }
 }

@@ -48,22 +48,18 @@ public class WaveTrainingPacketGraphStage extends GraphStage<FlowShape<WavePacke
                             log.log(Level.FINE,"Buffer Element:{0} ",packet.toString());
                             waveTrainingPacket.getBuffer().add(packet);
                         }else if( !(packet.getPacket() instanceof StatusPacket)){
-                            if(waveTrainingPacket.getBuffer().size()>=1) {
-                                waveTrainingPacket.setHeader(packet);
+                            if(waveTrainingPacket.getHeader()!=null && waveTrainingPacket.getBuffer().size()>=1){
                                 push(out, waveTrainingPacket);
-                                log.log(Level.FINE,"Pushing Element: {0} - {1}", Arrays.asList(packet.getPacket().getClass(),waveTrainingPacket.getBuffer().size()));
-                            }else{
-                                log.log(Level.WARNING,"Discarding [{0}]",packet.getPacket().getClass().getSimpleName());
+                                reset();
                             }
-                            reset();
+                            waveTrainingPacket.setHeader(packet);
+                            log.log(Level.FINE,"Pushing Element: {0} - {1}", Arrays.asList(packet.getPacket().getClass(),waveTrainingPacket.getBuffer().size()));
                         }
-
                     }
                 });
-
                 setHandler(out, new AbstractOutHandler() {
                     @Override
-                    public void onPull() throws Exception {
+                    public void onPull() {
                         pull(in);
                     }
                 });
