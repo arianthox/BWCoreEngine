@@ -1,15 +1,15 @@
 package com.globant.brainwaves.service;
 
 import com.globant.brainwaves.commons.adapter.KafkaProducer;
-import com.globant.brainwaves.commons.persistence.elastic.domain.BufferRawData;
 import com.globant.brainwaves.commons.model.BufferRawPacket;
+import com.globant.brainwaves.commons.persistence.elastic.domain.BufferRawData;
 import com.globant.brainwaves.commons.persistence.elastic.repository.BufferRawPacketRepository;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Log
 @Service
@@ -29,7 +29,6 @@ public class BufferRawPacketService {
 
     public void send(String deviceId, String sessionId, final BufferRawPacket packet) {
         log.info(String.format("[%s] [%s] [%s] - %s", packet.getClass().getSimpleName(),deviceId, sessionId, Collections.singletonList(packet.toHashMap()).toString()));
-
         kafkaProducer.send(packet, done -> {
             log.fine("Saving to Repo:"+packet.toData());
             packetRepository.save(packet.toData());
