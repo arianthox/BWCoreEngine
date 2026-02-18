@@ -1,67 +1,48 @@
-# CoreEngine
-===========================================
+# BWCoreEngine
 
-The purpose of this project is to provide the core features, orchestrade and manage the processing flow. 
+## Overview
 
+Legacy orchestration service that also hosts Eureka service discovery. Historically coupled to a predictor/lottery processing flow.
 
-Technologies
-------------
+## Scope in BrainWaves
 
-+ java
-+ Spring
-+ docker
-+ gradle
-+ elastic search
+- Out-of-scope for brainwave-only target core
+- Retained temporarily for compatibility where required
 
-Prerequisites
---------------
-You will need Docker in order to successfully run this project.
+## Tech Stack
 
-https://docs.docker.com/install/
+- Java 11
+- Spring Boot 2.2.x
+- Spring Cloud (Eureka, Feign)
+- Kafka
+- Gradle
+- Docker / docker-compose
 
+## Build
 
-How To Compile
---------------
-
-The service can be compiled with:
-
-```
-gradle clean build
+```bash
+./gradlew clean build
 ```
 
+## Run
 
-How To Build the Docker Image
---------------
-
-Use this command to build the docker image:
-
-```
-docker build .
+```bash
+./gradlew bootRun
 ```
 
-
-How To start docker compose
---------------
-
-The service can be initiated with:
-
-```
+```bash
 docker-compose up --build
 ```
 
-How To get Access
---------------
+## Key Configuration / Integration
 
-The service can be compiled with:
+- Config file: `src/main/resources/application.yml`
+- Important keys:
+  - `spring.kafka.bootstrap-servers`
+  - `eureka.client.service-url.defaultZone`
+  - `draw.url`
+- Cross-repo dependency: `:commons` via `settings.gradle` (legacy path expectation: `../Commons`)
 
-```
-docker-compose up --build
-```
+## Status / Notes
 
-Successful compilation conditions
---------------
-This project uses pmd, findbugs, jacoco to guaranty the quality of the code.
-
-In addition there is a jacoco task that is attached to the build lifecycle that prevents the successful compilation of the project if there is no enought unit test code coverage.
-
-The current minimun coverage percentage is: 80 %
+- Recommended long-term path: separate/archive from BrainWaves core domain.
